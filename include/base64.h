@@ -1,0 +1,6 @@
+#pragma once
+
+#include <string>
+
+std::string get_bytes(const std::string& asdf);
+std::string base64encode(const std::string& conv);

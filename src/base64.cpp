@@ -1,12 +1,11 @@
 #include <iostream>
 #include <bitset>
-#include <string>
 #include <map>
 
+#include "base64.h"
 
 using std::cout;
 using std::endl;
-
 
 static std::map<std::string, std::string> mmap
 {
@@ -28,7 +27,6 @@ static std::map<std::string, std::string> mmap
 {"111100","8"},{"111101","9"},{"111110","+"},{"111111","/"}
 };
 
-
 std::string get_bytes(const std::string& asdf)
 {
 	std::string bytes;
@@ -41,7 +39,6 @@ std::string get_bytes(const std::string& asdf)
 
 	return bytes;
 }
-
 
 std::string base64encode(const std::string& conv)
 {

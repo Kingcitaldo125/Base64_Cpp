@@ -1,6 +1,10 @@
 # out.txt files
 out.txt
 
+# Bin and Build dirs
+*bin/
+*build/
+
 # Prerequisites
 *.d
 
