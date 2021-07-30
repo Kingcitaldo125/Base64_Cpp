@@ -1,11 +1,7 @@
-#include <iostream>
 #include <bitset>
 #include <map>
 
 #include "base64.h"
-
-using std::cout;
-using std::endl;
 
 static std::map<std::string, std::string> mmap
 {
