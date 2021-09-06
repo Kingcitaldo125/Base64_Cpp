@@ -1,5 +1,7 @@
 # out.txt files
 out.txt
+encode.txt
+decode.txt
 
 # Bin and Build dirs
 *bin/
