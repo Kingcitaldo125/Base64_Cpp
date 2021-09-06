@@ -1,6 +1,8 @@
 #include <bitset>
+#include <vector>
 #include <map>
 #include <sstream>
+#include <regex>
 
 // TBD: Remove - only for debugging/testing
 #include <iostream>
@@ -106,18 +108,20 @@ std::string base64encode(const std::string& conv)
 	// The first six bits, in the input char, are processed while the
 	// remaining two bits are processed during the next pass/iteration
 	std::string n_str;
-	int i = 0;
-	while(1)
 	{
-		if (i >= bytes.size())
-			break;
-		auto subs = bytes.substr(i, 6);
-		n_str += mmap_encode[subs];
-		i += 6;
+		long unsigned int i = 0;
+		while(1)
+		{
+			if (i >= bytes.size())
+				break;
+			auto subs = bytes.substr(i, 6);
+			n_str += mmap_encode[subs];
+			i += 6;
+		}
 	}
 
 	// Insert padding, if necessary
-	for (i = 0; i < pads; ++i)
+	for (short i = 0; i < pads; ++i)
 	{
 		n_str += "=";
 	}
@@ -125,126 +129,71 @@ std::string base64encode(const std::string& conv)
 	return n_str;
 }
 
+// TBD: May need rework since 4 bytes of encoded text are not processed at once
+// This is currently just an interpretation of how to decode the encoded text
 std::string base64decode(const std::string& conv)
 {
-	if(conv.size() <= 1)
+	if(conv.size() <= 1 || conv.size() % 4 != 0 || !std::regex_match(conv,std::regex("[A-Za-z0-9+/=]+")))
 		return "INVALID";
 
-	// Store the decoded byte
-	std::bitset<8> decoded_bits;
+	std::vector<std::bitset<6>> chunks;
 
-	// Store any remaining, encoded, bits for a subsequent pass
-	std::bitset<4> bitbucket;
-	int bbucket_count = 0;
-
-	std::stringstream ss;
-
-	for(auto& chr : conv)
+	// Build the collection of 'chunks'
+	// each chunk is the 6-bit representation of a single base64 encoded character
+	for(long unsigned int index = 0; index < conv.size(); index += 4)
 	{
-		std::string chr_str(1, chr);
-
-		// Should not have to process padding chars
-		if(chr_str == "=")
-			continue;
-
-		std::bitset<6> base64_bits(mmap_decode[chr_str]);
-
-		cout << "Processing: " << chr << endl;
-		cout << (decoded_bits.any() ? "Bits in decoded" : "No bits in decoded") << endl;
-		cout << (bitbucket.any() ? "Bits in bitbucket" : "No bits in bitbucket") << endl;
-
-		// If there are bits in the general container, use those to decode
-		if (decoded_bits.any())
+		for(long unsigned int encoded_idx = index; encoded_idx < index + 4; ++encoded_idx)
 		{
-			decoded_bits.set(1, base64_bits[5]);
-			decoded_bits.set(0, base64_bits[4]);
+			std::string holdr(1, conv.at(encoded_idx));
+			std::string encoded_bytes = holdr == "=" ? "000000" : mmap_decode[holdr];
 
-			char n_chr = decoded_bits.to_ulong() & 0xFF;
-			cout << "(decoded_bits.any) Pushing '" << n_chr << "'" << endl;
-			ss << n_chr;
+			//cout << "holdr: " << holdr << "\n";
+			//cout << "encoded_bytes: " << encoded_bytes << "\n"
 
-			// Set the remaining 4 bits for the next pass
-			bitbucket.set(3, base64_bits[3]);
-			bitbucket.set(2, base64_bits[2]);
-			bitbucket.set(1, base64_bits[1]);
-			bitbucket.set(0, base64_bits[0]);
-
-			bbucket_count = 4;
-
-			decoded_bits.reset();
-		}
-		// If there aren't bits in the primary bit container, check the bitbucket
-		else if(bitbucket.any())
-		{
-			/**/
-			cout << "base64 bits" << "\n";
-			for(int i = 0; i < 6; ++i)
-				cout << i << "," << base64_bits[i] << "\n";
-			/**/
-			/**/
-			cout << "bitbucket" << "\n";
-			for(int i = 0; i < 4; ++i)
-				cout << i << "," << bitbucket[i] << "\n";
-			/**/
-
-			cout << "bits" << "\n";
-			int decoded_index = 7;
-			for(int i = 3; i > 3-bbucket_count; --i)
+			// Take the chunk string and trnasfer the bits into the chunk bitset
+			std::bitset<6> chunk;
+			for(short i = 0; i < 6; ++i)
 			{
-				cout << decoded_index << "," << i << "\n";
-				decoded_bits.set(decoded_index, bitbucket[i]);
-				--decoded_index;
+				chunk.set(i, encoded_bytes[i] == '1' ? 1 : 0);
 			}
 
-			cout << "decoded:\n";
-			cout << "bbucket_count: " << bbucket_count << "\n";
-			cout << "decoded_index: " << decoded_index << "\n";
-			/**/
-			for(int j = decoded_index + (bbucket_count - 2); decoded_index >= 0; --decoded_index, --j)
-			{
-				cout << decoded_index << "," << j << "\n";
-				decoded_bits.set(decoded_index, base64_bits[j]);
-			}
-			/**/
-
-			/*
-			decoded_bits.set(3, base64_bits[5]);
-			decoded_bits.set(2, base64_bits[4]);
-			decoded_bits.set(1, base64_bits[3]);
-			decoded_bits.set(0, base64_bits[2]);
-			*/
-
-			/**/
-			cout << "decoded_bits" << "\n";
-			for(int i = 0; i < 8; ++i)
-				cout << decoded_bits[i] << "\n";
-			/**/
-
-			char n_chr = decoded_bits.to_ulong() & 0xFF;
-			cout << "(bitbucket.any) Pushing '" << n_chr << "'" << endl;
-			ss << n_chr;
-
-			decoded_bits.reset();
-			bitbucket.reset();
-			bbucket_count = 0;
-
-			// There should be two additional bits that are lingering - store those
-			bitbucket.set(3, base64_bits[1]);
-			bitbucket.set(2, base64_bits[0]);
-			bbucket_count = 2;
+			// add to the collection of encoded chunks
+			chunks.push_back(chunk);
 		}
-		else // store the contents of the base64 bits, and continue
+	}
+
+	// Convert the chunks to bytes and write out the decoded byte to the stringstream
+	// return after all bytes were written out to the stream
+	std::stringstream ss;
+	std::vector<std::bitset<8>> bytes;
+	{
+		int i = 0;
+		int j = 7;
+		std::bitset<8> byte;
+		for(auto& chunk : chunks)
 		{
-			cout << "Setting decoded bits to Base64 bits\n";
-			decoded_bits.set(7, base64_bits[5]);
-			decoded_bits.set(6, base64_bits[4]);
-			decoded_bits.set(5, base64_bits[3]);
-			decoded_bits.set(4, base64_bits[2]);
-			decoded_bits.set(3, base64_bits[1]);
-			decoded_bits.set(2, base64_bits[0]);
-		}
+			for(short itx = 0; itx < 6; ++itx)
+			{
+				//cout << chunk[itx];
+				byte.set(j, chunk[itx]);
+				++i;
+				--j;
 
-		cout << "\n";
+				if(i%8==0)
+				{
+					bytes.push_back(byte);
+					byte.reset();
+					i=0;
+					j=7;
+				}
+			}
+		}
+	}
+
+	for(auto& byte : bytes)
+	{
+		//cout << "Byte: " << byte.to_string() << endl;
+		ss << static_cast<char>(byte.to_ulong() & 0xFF);
 	}
 
 	return ss.str();
