@@ -4,12 +4,6 @@
 #include <sstream>
 #include <regex>
 
-// TBD: Remove - only for debugging/testing
-#include <iostream>
-
-using std::cout;
-using std::endl;
-
 #include "base64.h"
 
 static std::map<std::string, std::string> mmap_encode
@@ -147,9 +141,6 @@ std::string base64decode(const std::string& conv)
 			std::string holdr(1, conv.at(encoded_idx));
 			std::string encoded_bytes = holdr == "=" ? "000000" : mmap_decode[holdr];
 
-			//cout << "holdr: " << holdr << "\n";
-			//cout << "encoded_bytes: " << encoded_bytes << "\n"
-
 			// Take the chunk string and trnasfer the bits into the chunk bitset
 			std::bitset<6> chunk;
 			for(short i = 0; i < 6; ++i)
@@ -174,7 +165,6 @@ std::string base64decode(const std::string& conv)
 		{
 			for(short itx = 0; itx < 6; ++itx)
 			{
-				//cout << chunk[itx];
 				byte.set(j, chunk[itx]);
 				++i;
 				--j;
@@ -192,7 +182,6 @@ std::string base64decode(const std::string& conv)
 
 	for(auto& byte : bytes)
 	{
-		//cout << "Byte: " << byte.to_string() << endl;
 		ss << static_cast<char>(byte.to_ulong() & 0xFF);
 	}
 
