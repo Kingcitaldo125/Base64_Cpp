@@ -153,7 +153,8 @@ std::string base64decode(const std::string& conv)
 	}
 
 	// Convert the chunks to bytes and write out the decoded byte to the stringstream
-	// return after all bytes were written out to the stream
+	// return after 'all' bytes were written out to the stream
+	// Don't write out padding bytes to the stream
 	std::stringstream ss;
 	std::vector<std::bitset<8>> bytes;
 	{
@@ -189,6 +190,7 @@ std::string base64decode(const std::string& conv)
 		}
 	}
 
+	// Actually write out the bytes to the stream
 	for(auto& byte : bytes)
 	{
 		ss << static_cast<char>(byte.to_ulong() & 0xFF);
