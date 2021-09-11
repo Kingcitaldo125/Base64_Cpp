@@ -2,7 +2,6 @@
 #include <vector>
 #include <map>
 #include <sstream>
-#include <regex>
 
 #include "base64.h"
 
@@ -127,7 +126,7 @@ std::string base64encode(const std::string& conv)
 // This is currently just an interpretation of how to decode the encoded text
 std::string base64decode(const std::string& conv)
 {
-	if(conv.size() <= 1 || conv.size() % 4 != 0 || !std::regex_match(conv,std::regex("[A-Za-z0-9+/=]+")))
+	if(conv.size() <= 1 || conv.size() % 4 != 0)
 		return "INVALID";
 
 	std::vector<std::bitset<6>> chunks;
