@@ -160,8 +160,12 @@ std::string base64decode(const std::string& conv)
 		int i = 0;
 		int j = 7;
 		std::bitset<8> byte;
+		bool got_zero_byte = false;
 		for(auto& chunk : chunks)
 		{
+			if(got_zero_byte)
+				break;
+
 			for(short itx = 0; itx < 6; ++itx)
 			{
 				byte.set(j, chunk[itx]);
@@ -170,6 +174,12 @@ std::string base64decode(const std::string& conv)
 
 				if(i%8==0)
 				{
+					if(!byte.to_ulong())
+					{
+						got_zero_byte = true;
+						break;
+					}
+
 					bytes.push_back(byte);
 					byte.reset();
 					i=0;
