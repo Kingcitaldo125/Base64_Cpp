@@ -8,7 +8,6 @@ using std::endl;
 
 int main(int argc, char** argv)
 {
-  /*
   // TBD: Support command line args?
   cout << "Encode\n";
 
@@ -28,10 +27,6 @@ int main(int argc, char** argv)
   cout << "'Man ' : " << base64decode("TWFuIA==") << endl;
   cout << "'Man i' : " << base64decode("TWFuIGk=") << endl;
   cout << "'Man is' : " << base64decode("TWFuIGlz") << endl;
-  */
-
-  auto res = base64decode("Li4uLg==");
-  cout << res << " " << res.size() << endl;
 
   return 0;
 }
