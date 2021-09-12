@@ -122,8 +122,6 @@ std::string base64encode(const std::string& conv)
 	return n_str;
 }
 
-// TBD: May need rework since 4 bytes of encoded text are not processed at once
-// This is currently just an interpretation of how to decode the encoded text
 std::string base64decode(const std::string& conv)
 {
 	if(conv.size() <= 1 || conv.size() % 4 != 0)
