@@ -45,7 +45,7 @@ static std::map<std::string, std::string> mmap_decode
 {"8","111100"},{"9","111101"},{"+","111110"},{"/","111111"}
 };
 
-std::string get_bytes(const std::string& asdf)
+static std::string get_bytes(const std::string& asdf)
 {
 	std::string bytes;
 	for (auto& i : asdf)
