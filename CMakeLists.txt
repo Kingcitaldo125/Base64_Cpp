@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(base64 VERSION 1.0)
+project(base64 VERSION 0.0.2)
 
 option(BUILD_STATIC "" ON)
 option(BUILD_SHARED "" OFF)
