@@ -1,22 +1,21 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(base64 VERSION 0.0.2 LANGUAGES CXX)
+project(base64 VERSION 0.2.0 LANGUAGES CXX)
 
-option(BUILD_STATIC "" ON)
+option(BUILD_STATIC "Build a static library" ON)
 
 set(LIBRARY_NAME "base64")
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/)
-
-message("CMAKE_SOURCE_DIR = ${CMAKE_SOURCE_DIR}")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/)
 
 add_executable(app ${CMAKE_SOURCE_DIR}/src/main.cpp)
 target_compile_options(app PRIVATE "-Wall")
 
 if(BUILD_STATIC)
     add_library(${LIBRARY_NAME} STATIC ${CMAKE_SOURCE_DIR}/src/base64.cpp)
-elseif(BUILD_SHARED)
+else()
     set(LIBRARY_NAME "${LIBRARY_NAME}_shared")
     add_library(${LIBRARY_NAME} SHARED ${CMAKE_SOURCE_DIR}/src/base64.cpp)
 endif()
@@ -85,3 +84,4 @@ install(FILES
 DESTINATION
   ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}-${PROJECT_VERSION}
 )
+

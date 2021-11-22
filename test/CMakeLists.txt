@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(CppEarleyTest VERSION 1.0)
+project(CppEarleyTest VERSION 1.1)
 
 set(CMAKE_CXX_STANDARD 11)
 
@@ -24,9 +24,10 @@ if(${debug})
   message("TEST_GRAMMAR_DIRECTORY: ${TEST_GRAMMAR_DIRECTORY}")
 endif()
 
-find_library(BASE_LIB base_six_four
+find_library(BASE_LIB base64 base64_shared
     HINTS ${PROJECT_ROOT_DIRECTORY}
-    PATH_SUFFIXES /bin /bin/lib /build /build/lib)
+    PATH_SUFFIXES /bin /bin/lib /build /build/lib
+    REQUIRED)
 
 add_executable(app-test test.cpp)
 
@@ -35,3 +36,4 @@ target_link_libraries(app-test ${CPP_EARLEY} ${GTEST_LIBRARIES} ${GTEST_MAIN_LIB
 target_include_directories(app-test PUBLIC ${PROJECT_ROOT_DIRECTORY}/include ${PROJECT_ROOT_DIRECTORY}/src)
 
 add_test(NAME app-test-test COMMAND app-test ${TEST_GRAMMAR_DIRECTORY})
+

@@ -138,7 +138,7 @@ std::string base64decode(const std::string& conv)
 			std::string holdr(1, conv.at(encoded_idx));
 			std::string encoded_bytes = holdr == "=" ? "000000" : mmap_decode[holdr];
 
-			// Take the chunk string and trnasfer the bits into the chunk bitset
+			// Take the chunk string and transfer the bits into the chunk bitset
 			std::bitset<6> chunk;
 			for(short i = 0; i < 6; ++i)
 			{
@@ -191,7 +191,7 @@ std::string base64decode(const std::string& conv)
 	// Actually write out the bytes to the stream
 	for(auto& byte : bytes)
 	{
-		ss << static_cast<char>(byte.to_ulong() & 0x100);
+		ss << static_cast<char>(byte.to_ulong() % 0x100);
 	}
 
 	return ss.str();
