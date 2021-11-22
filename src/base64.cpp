@@ -191,7 +191,7 @@ std::string base64decode(const std::string& conv)
 	// Actually write out the bytes to the stream
 	for(auto& byte : bytes)
 	{
-		ss << static_cast<char>(byte.to_ulong() & 0xFF);
+		ss << static_cast<char>(byte.to_ulong() & 0x100);
 	}
 
 	return ss.str();
