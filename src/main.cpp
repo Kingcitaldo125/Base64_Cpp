@@ -6,12 +6,12 @@
 using std::cout;
 using std::endl;
 
-int main(int argc, char** argv)
-{
+int main(int argc, char **argv) {
   // TBD: Support command line args?
   cout << "Encode\n";
 
-  // Simply using the Thomas Hobbes's Leviathan example from Wikipedia to do basic testing
+  // Simply using the Thomas Hobbes's Leviathan example from Wikipedia to do
+  // basic testing
   cout << "'TQ==' : " << base64encode("M") << endl;
   cout << "'TWE=' : " << base64encode("Ma") << endl;
   cout << "'TWFu' : " << base64encode("Man") << endl;
