@@ -1,14 +1,16 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(base64 VERSION 0.2.0 LANGUAGES CXX)
+project(base64 VERSION 0.3.0 LANGUAGES CXX)
 
 option(BUILD_STATIC "Build a static library" ON)
+
+option(BUILD_TESTS "Build test project" OFF)
 
 set(LIBRARY_NAME "base64")
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 add_executable(app ${CMAKE_SOURCE_DIR}/src/main.cpp)
 target_compile_options(app PRIVATE "-Wall")
@@ -23,7 +25,11 @@ endif()
 target_include_directories(app PRIVATE ${CMAKE_SOURCE_DIR}/include/)
 target_link_libraries(app PRIVATE ${LIBRARY_NAME})
 
-# Include directories for the chosen lib
+if(BUILD_TESTS)
+  add_subdirectory(test)
+endif()
+
+# Include directories for the chosen lib (headers)
 target_include_directories(${LIBRARY_NAME} PUBLIC
 $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
 $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
