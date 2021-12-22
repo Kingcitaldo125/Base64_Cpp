@@ -21,7 +21,8 @@ To build the application with tests:
 
 ```
 cmake -S . -B build -DBUILD_TESTS=true
-RUN cmake --build bin
+cmake --build build
 ```
 
 Google Test must be installed & configured to build & run unit tests.
+
