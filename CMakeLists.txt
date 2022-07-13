@@ -91,3 +91,5 @@ DESTINATION
   ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}-${PROJECT_VERSION}
 )
 
+# Must be last
+include(CPack)
